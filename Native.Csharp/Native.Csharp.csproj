@@ -101,6 +101,7 @@
     <Compile Include="App\Interface\IEvent_GroupMessage.cs" />
     <Compile Include="App\Interface\IEvent_OtherMessage.cs" />
     <Compile Include="App\Interface\IEvent_UserExpand.cs" />
+    <Compile Include="App\Main\hxw.cs" />
     <Compile Include="App\Main\Repeater.cs" />
     <Compile Include="App\Model\DiscussMessageEventArgs.cs" />
     <Compile Include="App\Model\FileUploadMessageEventArgs.cs" />

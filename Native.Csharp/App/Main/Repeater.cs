@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 
 namespace Native.Csharp.App.Main
 {
-
     class Repeater
     {
         private static Random ran = new Random();
@@ -26,7 +25,7 @@ namespace Native.Csharp.App.Main
             repeated = false;
         }
 
-        
+
         static public bool CheckIfIgnore(string msg)
         {
             if (msg.Length == 0 || msg[0] == '.') //对指令不复读
@@ -60,10 +59,11 @@ namespace Native.Csharp.App.Main
                 case 1: //劣质复读机
                     {
                         List<string> chaostring = Cutstring(msg);
-                        string result = "";
+                        StringBuilder stringBuilder = new StringBuilder();
                         int len = ran.Next() % Math.Max(1, chaostring.Count - 1) + 1;
                         for (int i = 0; i < len; i++)
-                            result += chaostring[i];
+                            stringBuilder.Append(chaostring[i]);
+                        string result = stringBuilder.ToString();
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
                     break;
@@ -72,7 +72,6 @@ namespace Native.Csharp.App.Main
                     {
                         Common.CqApi.SendGroupMessage(e.FromGroup, msg + " +1");
                     }
-                    
                     break;
 
                 case 3: //雕版印刷复读机
@@ -90,15 +89,15 @@ namespace Native.Csharp.App.Main
                         string result = msg + msg;
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
-                    
                     break;
 
                 case 5: //倒装复读机
                     {
                         List<string> chaostring = Cutstring(msg);
-                        string result = "";
+                        StringBuilder stringBuilder = new StringBuilder();
                         for (int i = chaostring.Count - 1; i >= 0; i--)
-                            result += chaostring[i];
+                            stringBuilder.Append(chaostring[i]);
+                        string result = stringBuilder.ToString();
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
                     break;
@@ -117,10 +116,11 @@ namespace Native.Csharp.App.Main
 
                 case 7: //沙雕复读机
                     {
+                        StringBuilder stringBuilder = new StringBuilder(msg);
                         int n = ran.Next() % 9 + 1;
-                        string result = msg;
                         for (int i = 0; i < n; i++)
-                            result += (char)(ran.Next() % 26 + 'a');
+                            stringBuilder.Append((char)(ran.Next() % 26 + 'a'));
+                        string result = stringBuilder.ToString();
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
                     break;
@@ -145,13 +145,14 @@ namespace Native.Csharp.App.Main
                 case 10: //混乱复读机
                     {
                         List<string> chaostring = Cutstring(msg);
-                        string result = "";
+                        StringBuilder stringBuilder = new StringBuilder();
                         while (chaostring.Count > 0)
                         {
                             int i = ran.Next() % chaostring.Count;
-                            result += chaostring[i];
+                            stringBuilder.Append(chaostring[i]);
                             chaostring.RemoveAt(i);
                         }
+                        string result = stringBuilder.ToString();
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
                     break;
@@ -159,9 +160,10 @@ namespace Native.Csharp.App.Main
                 case 11: //混乱复读机·改
                     {
                         List<string> chaostring = Cutstring(msg);
-                        string result = "";
+                        StringBuilder stringBuilder = new StringBuilder();
                         for (int i = 0; i < chaostring.Count; i++)
-                            result += chaostring[ran.Next() % chaostring.Count];
+                            stringBuilder.Append(chaostring[ran.Next() % chaostring.Count]);
+                        string result = stringBuilder.ToString();
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
                     break;
@@ -169,27 +171,34 @@ namespace Native.Csharp.App.Main
                 case 12: //回声复读机
                     {
                         List<string> chaostring = Cutstring(msg);
-                        string result = msg;
-                        if (chaostring.Count>=2)
+                        StringBuilder stringBuilder = new StringBuilder(msg);
+                        if (chaostring.Count >= 2)
                         {
                             int n = ran.Next() % 9 + 1;
                             for (int i = 0; i < n; i++)
-                                result += chaostring.Last();
+                                stringBuilder.Append(chaostring.Last());
                         }
+                        string result = stringBuilder.ToString();
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
-
                     break;
+
                 case 13: //大喘气复读机
                     {
                         List<string> chaostring = Cutstring(msg);
-                        string result = chaostring[0];
+                        StringBuilder stringBuilder = new StringBuilder(chaostring[0]);
                         for (int i = 1; i < chaostring.Count; i++)
-                            result += " " + chaostring[i];
+                            stringBuilder.Append(" " + chaostring[i]);
+                        string result = stringBuilder.ToString();
                         Common.CqApi.SendGroupMessage(e.FromGroup, result);
                     }
                     break;
-
+                case 14: //火星复读机
+                    {
+                        string result = Hxw.translate(msg);
+                        Common.CqApi.SendGroupMessage(e.FromGroup, result);
+                    }
+                    break;
                 default:
                     {
                         Common.CqApi.SendGroupMessage(e.FromGroup, msg);//普通复读
@@ -201,7 +210,7 @@ namespace Native.Csharp.App.Main
         }
 
 
-        public bool CDDec()
+        public bool CDDec() //CDDec反馈当前是否已经结束CD，并且，如果没有结束CD，令CD-1。
         {
             if (cooldown <= 0)
                 return true;
@@ -213,7 +222,7 @@ namespace Native.Csharp.App.Main
         }
         public void Update(string msg)
         {
-            if (content!=msg)
+            if (content != msg)
             {
                 content = msg;
                 repeated = false;
@@ -232,11 +241,11 @@ namespace Native.Csharp.App.Main
         {
             if (delayCountdown > 0)
                 delayCountdown--;
-            if (delayContent!="" && delayCountdown<=0)
+
+            if (delayContent != "" && delayCountdown <= 0)
             {
                 Common.CqApi.SendGroupMessage(e.FromGroup, delayContent);
                 delayContent = "";
-
             }
         }
 
@@ -245,6 +254,8 @@ namespace Native.Csharp.App.Main
             List<string> stringpart = new List<string>();
             for (int i = 0; i < msg.Length; i++)
             {
+                if (msg[i] == '\r')   //忽略所有\r\n中的\r只保留\n，酷Q最后会自动将\n重新转义回\r\n。
+                    continue;
                 if (msg[i] == '[')
                 {
                     Match cqMatch = Regex.Match(msg.Substring(i), @"(^\[CQ:.+?\])");
@@ -268,6 +279,8 @@ namespace Native.Csharp.App.Main
             int mode = ran.Next() % 20;
             if (mode == 3 && str != content) //如果是抽选复读，不触发雕版印刷复读机
                 mode = 99;
+            /*if (int.TryParse(str.Substring(0,2),out int temp))// 调试用
+                return temp;*/
             return mode;
         }
         private int RollCoolDown()

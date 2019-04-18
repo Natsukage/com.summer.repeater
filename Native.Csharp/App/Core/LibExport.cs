@@ -18,7 +18,7 @@ using System.Text;
 using Unity;
 using Native.Csharp.App.Event;
 using Native.Csharp.App.Model;
-using Native.Csharp.Sdk.Cqp.Api;
+using Native.Csharp.Sdk.Cqp;
 using Native.Csharp.Sdk.Cqp.Enum;
 using Native.Csharp.Tool;
 

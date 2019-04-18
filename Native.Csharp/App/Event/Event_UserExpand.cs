@@ -1,5 +1,5 @@
 ﻿using Native.Csharp.App.Interface;
-using Native.Csharp.Sdk.Cqp.Api;
+using Native.Csharp.Sdk.Cqp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
